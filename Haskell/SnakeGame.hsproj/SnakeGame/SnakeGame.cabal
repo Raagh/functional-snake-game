@@ -1,0 +1,17 @@
+cabal-version: 2.4
+name: SnakeGame
+version: 1.0
+stability: experimental
+x-ghc-framework-version: 8.6.4-13.14-2
+x-last-ide-version: HfM1.7.0
+
+executable SnakeGame
+    main-is: Main.hs
+    other-modules:
+        Input
+        Core
+        UI
+    default-language: Haskell2010
+    build-depends:
+        ansi-terminal -any,
+        base -any
