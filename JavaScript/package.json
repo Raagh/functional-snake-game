@@ -1,0 +1,20 @@
+{
+  "name": "snake-game-js",
+  "version": "1.0.0",
+  "description": "snake game implementation in functional js",
+  "main": "index.js",
+  "scripts": {
+    "watch": "nodemon index.js --no-stdin",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Patricio Ferraggi (Raagh)",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^13.9.0",
+    "nodemon": "^2.0.2"
+  },
+  "dependencies": {
+    "@types/ramda": "^0.26.44",
+    "ramda": "^0.27.0"
+  }
+}
