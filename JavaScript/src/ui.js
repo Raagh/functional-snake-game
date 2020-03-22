@@ -1,11 +1,21 @@
 const r = require("ramda");
 
-const func = value => () => value;
+const set = str => pos =>
+  r.adjust(
+    pos.y,
+    r.adjust(pos.x, () => str)
+  );
 
-const createWorld = (rows, columns) => {
+const createWorld = (rows, columns, state) => {
   const repeatDot = r.repeat(".");
-  return r.map(func(repeatDot(rows)), repeatDot(columns));
+  const matrix = r.map(r.thunkify(repeatDot)(rows), repeatDot(columns));
+
+  return r.pipe(addSnake(state), addApple(state))(matrix);
 };
+
+const addSnake = state => r.pipe(...r.map(set("X"), state.snake));
+
+const addApple = state => set("O")(state.apple);
 
 const displayWorld = matrix => {
   console.clear();
@@ -13,7 +23,7 @@ const displayWorld = matrix => {
 };
 
 const display = (rows, columns, state) => {
-  return r.pipe(createWorld, displayWorld)(rows, columns);
+  return r.pipe(createWorld, displayWorld)(rows, columns, state);
 };
 
 module.exports = {
