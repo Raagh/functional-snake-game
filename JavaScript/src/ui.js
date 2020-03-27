@@ -1,25 +1,29 @@
 const r = require("ramda");
 
-const set = str => pos =>
+const update = r.curry((str, pos) =>
   r.adjust(
     pos.y,
     r.adjust(pos.x, () => str)
-  );
+  )
+);
+
+const intercalate = r.curry((str, xs) => xs.join(str));
 
 const createWorld = (rows, columns, state) => {
   const repeatDot = r.repeat(".");
-  const matrix = r.map(r.thunkify(repeatDot)(rows), repeatDot(columns));
 
-  return r.pipe(addSnake(state), addApple(state))(matrix);
+  const map = r.map(r.thunkify(repeatDot)(rows), repeatDot(columns));
+
+  return r.pipe(addSnake(state), addApple(state))(map);
 };
 
-const addSnake = state => r.pipe(...r.map(set("X"), state.snake));
+const addSnake = state => r.pipe(...r.map(update("X"), state.snake));
 
-const addApple = state => set("O")(state.apple);
+const addApple = state => update("O")(state.apple);
 
 const displayWorld = matrix => {
   console.clear();
-  console.log("\x1Bc" + r.map(xs => xs.join(" "), matrix).join("\r\n"));
+  console.log(intercalate("\r\n", r.map(intercalate(" "), matrix)));
 };
 
 const display = (rows, columns, state) => {
