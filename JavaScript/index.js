@@ -1,14 +1,14 @@
-const UI = require("./src/ui");
-const Snake = require("./src/snake");
-const Input = require("./src/input");
+const { display } = require("./src/ui");
+const { initialState, step } = require("./src/snake");
+require("./src/input");
 
 let count = 0;
 
-const state = Snake.state;
+let mutableUglyState = initialState;
 
 setInterval(() => {
-  UI.display(15, 15, state);
-  Snake.step();
+  display(15, 15, mutableUglyState);
+  mutableUglyState = step(mutableUglyState);
   count++;
   console.log(count);
 }, 200);
