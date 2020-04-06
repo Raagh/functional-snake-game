@@ -4,11 +4,11 @@ require("./src/input");
 
 let count = 0;
 
-let mutableUglyState = initialState;
+let uglyMutableState = initialState;
 
 setInterval(() => {
-  display(15, 15, mutableUglyState);
-  mutableUglyState = step(mutableUglyState);
+  display(15, 15, uglyMutableState);
+  uglyMutableState = step(uglyMutableState);
   count++;
   console.log(count);
 }, 200);
