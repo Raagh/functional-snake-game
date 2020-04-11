@@ -7,4 +7,4 @@ I used it as an example to practice a few languages and get the "feeling" of fun
 Languages:
 
 - Haskell - <mark>`On Hold` till I get better at Functional Programming</mark>
-- JavaScript with ramda.js - <mark>Working</mark>
+- JavaScript with ramda.js - <mark>Done</mark>
