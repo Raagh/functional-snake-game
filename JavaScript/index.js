@@ -1,17 +1,35 @@
 const { display } = require("./src/ui");
-const { initialState, step } = require("./src/snake");
-require("./src/input");
+const { initialState, step, direction, addMove } = require("./src/snake");
+const readline = require("readline");
 
-let count = 0;
 let uglyMutableState = initialState;
 
+const setupInput = () => {
+  readline.emitKeypressEvents(process.stdin);
+  process.stdin.setRawMode(true);
+  process.stdin.on("keypress", (str, key) => {
+    if (key.ctrl && key.name === "c") process.exit();
+
+    const options = {
+      UP: (state) => addMove(direction.NORTH, state),
+      LEFT: (state) => addMove(direction.WEST, state),
+      DOWN: (state) => addMove(direction.SOUTH, state),
+      RIGHT: (state) => addMove(direction.EAST, state),
+    };
+
+    const move = options[key.name.toUpperCase()];
+    uglyMutableState = move(uglyMutableState);
+  });
+};
+
 const runGameLoop = () => {
+  setupInput();
   setInterval(() => {
     display(15, 15, uglyMutableState);
     uglyMutableState = step(uglyMutableState);
-    count++;
-    console.log(count);
-  }, 200);
+  }, 150);
 };
 
 runGameLoop();
+
+exports.module = { uglyMutableState };

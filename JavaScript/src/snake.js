@@ -1,4 +1,6 @@
 const r = require("ramda");
+const mod = (x) => (y) => ((y % x) + x) % x;
+const rnd = (min) => (max) => Math.floor(Math.random() * max) + min;
 
 const point = (x, y) => {
   return {
@@ -15,30 +17,42 @@ const direction = {
 };
 
 const initialState = {
-  snake: [point(4, 3), point(3, 3), point(2, 3)],
+  snake: [point(4, 3)],
   apple: point(5, 5),
   move: direction.EAST,
 };
 
-const addMove = (direction) => {
-  state.move = direction;
+const willEat = (head, apple) => head.x == apple.x && head.y == apple.y;
+
+const addMove = (direction, state) => {
+  return { ...state, move: direction };
 };
 
-const nextHead = r.curry((direction, snake) =>
-  point(snake[0].x + direction.x, snake[0].y + direction.y)
-);
+const nextHead = (direction, snake) =>
+  point(mod(15)(snake[0].x + direction.x), mod(15)(snake[0].y + direction.y));
 
 const nextSnake = (state) => {
-  if (!state.move) return;
+  const calculatedNextHead = nextHead(state.move, state.snake);
+  if (willEat(calculatedNextHead, state.apple)) {
+    return {
+      ...state,
+      snake: [calculatedNextHead, ...state.snake],
+    };
+  }
 
   return {
     ...state,
-    snake: [nextHead(state.move, state.snake), ...r.dropLast(1, state.snake)],
+    snake: [calculatedNextHead, ...r.dropLast(1, state.snake)],
   };
 };
 
+const nextApple = (state) => {
+  if (!willEat(state.snake[0], state.apple)) return state;
+  return { ...state, apple: point(rnd(0)(15 - 1), rnd(0)(15 - 1)) };
+};
+
 const step = (state) => {
-  return nextSnake(state);
+  return r.pipe(nextSnake, nextApple)(state);
 };
 
 module.exports = { initialState, addMove, direction, step };

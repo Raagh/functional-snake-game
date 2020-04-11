@@ -17,11 +17,11 @@ const createWorld = (rows, columns, state) => {
   return r.pipe(addSnake(state), addApple(state))(map);
 };
 
-const addSnake = state => r.pipe(...r.map(update("X"), state.snake));
+const addSnake = (state) => r.pipe(...r.map(update("X"), state.snake));
 
-const addApple = state => update("O")(state.apple);
+const addApple = (state) => update("O")(state.apple);
 
-const displayWorld = matrix => {
+const displayWorld = (matrix) => {
   console.clear();
   console.log(intercalate("\r\n", r.map(intercalate(" "), matrix)));
 };
@@ -31,5 +31,5 @@ const display = (rows, columns, state) => {
 };
 
 module.exports = {
-  display
+  display,
 };
