@@ -26,9 +26,9 @@ const displayWorld = (matrix) => {
   console.log(intercalate("\r\n", r.map(intercalate(" "), matrix)));
 };
 
-const display = (rows, columns, state) => {
+const display = r.curry((rows, columns, state) => {
   return r.pipe(createWorld, displayWorld)(rows, columns, state);
-};
+});
 
 module.exports = {
   display,

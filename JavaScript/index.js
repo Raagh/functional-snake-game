@@ -22,14 +22,19 @@ const setupInput = () => {
   });
 };
 
+const COLUMNS = 15;
+const ROWS = 15;
+const SPEED = 125;
+
+const displayState = display(COLUMNS, ROWS);
+const nextState = step(COLUMNS, ROWS);
+
 const runGameLoop = () => {
   setupInput();
   setInterval(() => {
-    display(15, 15, uglyMutableState);
-    uglyMutableState = step(uglyMutableState);
-  }, 150);
+    displayState(uglyMutableState);
+    uglyMutableState = nextState(uglyMutableState);
+  }, SPEED);
 };
 
 runGameLoop();
-
-exports.module = { uglyMutableState };

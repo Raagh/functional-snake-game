@@ -1,6 +1,5 @@
 const r = require("ramda");
-const mod = (x) => (y) => ((y % x) + x) % x;
-const rnd = (min) => (max) => Math.floor(Math.random() * max) + min;
+const { rnd, modulo } = require("./helper");
 
 const point = (x, y) => {
   return {
@@ -22,32 +21,38 @@ const initialState = {
   move: direction.EAST,
 };
 
-const willEat = (head, apple) => head.x == apple.x && head.y == apple.y;
+const isValidMove = (direction, move) =>
+  direction.x + move.x !== 0 && direction.y + move.y !== 0;
 
-const addMove = (direction, state) => {
-  return { ...state, move: direction };
-};
+const willEat = r.equals;
+const willCrash = (cols, rows, state) =>
+  r.find(r.equals(nextHead(cols, rows, state)))(state.snake);
 
-const nextHead = (direction, snake) =>
-  point(mod(15)(snake[0].x + direction.x), mod(15)(snake[0].y + direction.y));
+const addMove = (direction, state) =>
+  isValidMove(direction, state.move) ? { ...state, move: direction } : state;
 
-const nextSnake = (state) => {
-  const calculatedHead = nextHead(state.move, state.snake);
-  return {
-    ...state,
-    snake: willEat(calculatedHead, state.apple)
-      ? [calculatedHead, ...state.snake]
-      : [calculatedHead, ...r.dropLast(1, state.snake)],
-  };
-};
+const nextHead = (cols, rows, { move, snake }) =>
+  point(modulo(cols)(snake[0].x + move.x), modulo(rows)(snake[0].y + move.y));
 
-const nextApple = (state) =>
+const nextSnake = r.curry((cols, rows, state) => {
+  return willCrash(cols, rows, state)
+    ? initialState
+    : {
+        ...state,
+        snake: willEat(nextHead(cols, rows, state), state.apple)
+          ? [nextHead(cols, rows, state), ...state.snake]
+          : [nextHead(cols, rows, state), ...r.dropLast(1, state.snake)],
+      };
+});
+
+const nextApple = r.curry((cols, rows, state) =>
   !willEat(state.snake[0], state.apple)
     ? state
-    : { ...state, apple: point(rnd(0)(15 - 1), rnd(0)(15 - 1)) };
+    : { ...state, apple: point(rnd(0)(cols - 1), rnd(0)(rows - 1)) }
+);
 
-const step = (state) => {
-  return r.pipe(nextSnake, nextApple)(state);
-};
+const step = r.curry((cols, rows, state) =>
+  r.pipe(nextSnake(cols, rows), nextApple(cols, rows))(state)
+);
 
 module.exports = { initialState, addMove, direction, step };
