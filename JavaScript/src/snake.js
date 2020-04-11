@@ -32,24 +32,19 @@ const nextHead = (direction, snake) =>
   point(mod(15)(snake[0].x + direction.x), mod(15)(snake[0].y + direction.y));
 
 const nextSnake = (state) => {
-  const calculatedNextHead = nextHead(state.move, state.snake);
-  if (willEat(calculatedNextHead, state.apple)) {
-    return {
-      ...state,
-      snake: [calculatedNextHead, ...state.snake],
-    };
-  }
-
+  const calculatedHead = nextHead(state.move, state.snake);
   return {
     ...state,
-    snake: [calculatedNextHead, ...r.dropLast(1, state.snake)],
+    snake: willEat(calculatedHead, state.apple)
+      ? [calculatedHead, ...state.snake]
+      : [calculatedHead, ...r.dropLast(1, state.snake)],
   };
 };
 
-const nextApple = (state) => {
-  if (!willEat(state.snake[0], state.apple)) return state;
-  return { ...state, apple: point(rnd(0)(15 - 1), rnd(0)(15 - 1)) };
-};
+const nextApple = (state) =>
+  !willEat(state.snake[0], state.apple)
+    ? state
+    : { ...state, apple: point(rnd(0)(15 - 1), rnd(0)(15 - 1)) };
 
 const step = (state) => {
   return r.pipe(nextSnake, nextApple)(state);
