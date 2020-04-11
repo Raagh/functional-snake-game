@@ -1,13 +1,5 @@
 const r = require("ramda");
-
-const update = r.curry((str, pos) =>
-  r.adjust(
-    pos.y,
-    r.adjust(pos.x, () => str)
-  )
-);
-
-const intercalate = r.curry((str, xs) => xs.join(str));
+const { intercalate, update } = require("./helper");
 
 const createWorld = (rows, columns, state) => {
   const repeatDot = r.repeat(".");
