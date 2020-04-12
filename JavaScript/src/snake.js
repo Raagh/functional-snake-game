@@ -30,8 +30,9 @@ const willEat = r.equals;
 const willCrash = (cols, rows, state) =>
   r.find(r.equals(nextHead(cols, rows, state)))(state.snake);
 
-const addMove = (direction, state) =>
-  isValidMove(direction, state.move) ? { ...state, move: direction } : state;
+const addMove = r.curry((direction, state) =>
+  isValidMove(direction, state.move) ? { ...state, move: direction } : state
+);
 
 const nextHead = (cols, rows, { move, snake }) =>
   point(
