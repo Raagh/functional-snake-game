@@ -21,6 +21,8 @@ const initialState = {
   move: direction.EAST,
 };
 
+const randomPos = (pos) => rnd(0)(pos - 1);
+
 const isValidMove = (direction, move) =>
   direction.x + move.x !== 0 && direction.y + move.y !== 0;
 
@@ -46,9 +48,9 @@ const nextSnake = r.curry((cols, rows, state) => {
 });
 
 const nextApple = r.curry((cols, rows, state) =>
-  !willEat(state.snake[0], state.apple)
-    ? state
-    : { ...state, apple: point(rnd(0)(cols - 1), rnd(0)(rows - 1)) }
+  willEat(state.snake[0], state.apple)
+    ? { ...state, apple: point(randomPos(cols), randomPos(rows)) }
+    : state
 );
 
 const step = r.curry((cols, rows, state) =>
