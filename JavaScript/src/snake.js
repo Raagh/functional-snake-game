@@ -34,7 +34,10 @@ const addMove = (direction, state) =>
   isValidMove(direction, state.move) ? { ...state, move: direction } : state;
 
 const nextHead = (cols, rows, { move, snake }) =>
-  point(modulo(cols)(snake[0].x + move.x), modulo(rows)(snake[0].y + move.y));
+  point(
+    modulo(cols)(r.head(snake).x + move.x),
+    modulo(rows)(r.head(snake).y + move.y)
+  );
 
 const nextSnake = r.curry((cols, rows, state) => {
   return willCrash(cols, rows, state)
@@ -48,7 +51,7 @@ const nextSnake = r.curry((cols, rows, state) => {
 });
 
 const nextApple = r.curry((cols, rows, state) =>
-  willEat(state.snake[0], state.apple)
+  willEat(r.head(state.snake), state.apple)
     ? { ...state, apple: point(randomPos(cols), randomPos(rows)) }
     : state
 );
